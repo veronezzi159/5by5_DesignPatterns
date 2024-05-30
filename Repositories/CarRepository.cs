@@ -80,22 +80,20 @@ namespace Repositories
             try
             {              
                 SqlCommand cmd = new SqlCommand(Car.Delete, conn);
-                cmd.Parameters.AddWithValue("@id",id);                
-                int rowsAffected = cmd.ExecuteNonQuery();
-                if (rowsAffected > 0)
-                    result = true;
+                cmd.Parameters.AddWithValue("@id",id);
+                return (cmd.ExecuteNonQuery() > 0);                                 
             }
             catch (Exception)
             {
                 return result;
-
             }
             finally
             {
                 conn.Close();
             }
 
-            return result;
+            
+            
         }
         public Car GetById(int id) 
         {
