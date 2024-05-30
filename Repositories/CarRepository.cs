@@ -1,5 +1,7 @@
 ﻿using Models;
-using Microsoft.Data.SqlClient; 
+using Microsoft.Data.SqlClient;
+using System.Text;
+using System.Collections.Generic;
 
 namespace Repositories
 {
@@ -25,9 +27,8 @@ namespace Repositories
             bool result = false;
 
             try
-            {
-                string query = "INSERT INTO TB_Car (Name, Color, Year) VALUES (@Name, @Color, @Year)";
-                SqlCommand cmd = new SqlCommand(query, conn);
+            {            
+                SqlCommand cmd = new SqlCommand(Car.Insert, conn);
                 cmd.Parameters.AddWithValue("@Name", car.Name);
                 cmd.Parameters.AddWithValue("@Color", car.Color);
                 cmd.Parameters.AddWithValue("@Year", car.Year);
@@ -48,28 +49,125 @@ namespace Repositories
         }
         public bool Update(Car car) 
         {
-            
-    
-                return true;
+            bool result = false;
+
+            try
+            {                
+                SqlCommand cmd = new SqlCommand(Car.Update, conn);
+                cmd.Parameters.AddWithValue("@Name", car.Name);
+                cmd.Parameters.AddWithValue("@Color", car.Color);
+                cmd.Parameters.AddWithValue("@Year", car.Year);
+                cmd.Parameters.AddWithValue("@id", car.Id);
+                cmd.ExecuteNonQuery();
+                result = true;
+            }
+            catch (Exception)
+            {
+                return result;
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return result;
         }
         public bool Delete(int id) 
         {
-            
-    
-                return true;
+            bool result = false;
+
+            try
+            {              
+                SqlCommand cmd = new SqlCommand(Car.Delete, conn);
+                cmd.Parameters.AddWithValue("@id",id);                
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                    result = true;
+            }
+            catch (Exception)
+            {
+                return result;
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return result;
         }
         public Car GetById(int id) 
         {
-            
-    
-                return new Car();
-        }
-        public List<Car> GetAll() 
-        {
-            
-    
-                return new List<Car>();
+            Car car = new Car();
+            StringBuilder sb = new StringBuilder();
+            sb.Append(Car.GetById);
+
+            try
+            {
+               SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    car.Id = Convert.ToInt32(dr["Id"]);
+                    car.Name = dr["Name"].ToString();
+                    car.Color = dr["Color"].ToString();
+                    car.Year = Convert.ToInt32(dr["Year"]);
+                    
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return car;
         }
 
+        public List<Car> GetAll() 
+        {
+            List <Car> list = new List<Car>();
+            StringBuilder sb = new StringBuilder();
+            sb.Append(Car.GetAll);
+            // or
+            //sb.Append("SELECT       Id, ");
+            //sb.Append("             Name, ");
+            //sb.Append("             Color, ");
+            //sb.Append("             Year ");
+            //sb.Append("FROM TB_Car");
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    list.Add(new Car()
+                    {
+                        Id = Convert.ToInt32(dr["Id"]),
+                        Name = dr["Name"].ToString(),
+                        Color = dr["Color"].ToString(),
+                        Year = Convert.ToInt32(dr["Year"])
+                    });
+                }
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                conn.Close();   
+            }
+            return list;
+        }
     }
 }

@@ -4,23 +4,21 @@ using Models;
 Console.WriteLine("Inicio do Processamento");
 
 Car car = new Car()
-{
-    Id = 1,
-    Name = "Fusca",
-    Color = "Azul",
-    Year = 1970
+{   
+    Id = 2,
+    Name = "Opala",
+    Color = "Vermelho",
+    Year = 1992
 };
-Console.WriteLine(car);
+
 
 //if ternário
-Console.WriteLine(new CarController().Insert(car) ? "Registro Inserido" : "Erro ao inserir registro");
+//Console.WriteLine(new CarController().Insert(car) ? "Registro Inserido" : "Erro ao inserir registro");
 
-Console.WriteLine(new CarController().Update(car) ? "Registro alterado" : "Erro ao alterar registro");
+//Console.WriteLine(new CarController().Update(car) ? "Registro Atualizado" : "Erro ao atualizar registro");
 
-Console.WriteLine(new CarController().Delete(car.Id) ? "Registro deletado" : "Erro ao deletar registro");
+Console.WriteLine(new CarController().Delete(139) ? "Registro Deletado" : "Erro ao deletar registro");
 
-Console.WriteLine(new CarController().GetById(car.Id)!=null ? "registro encontrado" : "Erro ao encontrar registro" );
+//new CarController().GetAll().ForEach(c => Console.WriteLine(c));
 
-Console.WriteLine(new CarController().GetAll().Count > 0 ? "Registros encontrados" : "Erro ao encontrar registros" );
-
-
+//Console.WriteLine(new CarController().GetById(1));
